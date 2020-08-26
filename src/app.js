@@ -80,6 +80,23 @@ app.delete("/repositories/:id", (request, response) => {
 
 app.post("/repositories/:id/like", (request, response) => {
   // TODO
+    const {id} = request.params;
+    if(isUuid(id)) {
+        let repositoryNew = {}
+        const repositoryIndex = repositories.findIndex(r => r.id == id);
+        repository = repositories[repositoryIndex]
+        repositoryNew = {
+            id: repository.id,
+            url: repository.url,
+            title: repository.title,
+            techs: repository.techs,
+            likes:repository.likes+1,
+        }
+        repositories.splice(repositoryIndex,1);
+        repositories.push(repositoryNew);
+        return response.json(repositoryNew);
+    }
+    return response.status(400).json({error: "Repository not found"});
 });
 function isValid(value){
     return  null != value && '' !== value;
